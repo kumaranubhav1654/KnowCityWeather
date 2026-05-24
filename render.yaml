@@ -1,0 +1,17 @@
+# Render Blueprint — backend only (frontend deploys to Vercel)
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: knowcityweather-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        production
+    # Set in Render dashboard: OPENWEATHER_API_KEY, GEMINI_API_KEY,
+    # TWILIO_*, USER_WHATSAPP_NUMBER, CITY, PORT (Render sets PORT automatically)

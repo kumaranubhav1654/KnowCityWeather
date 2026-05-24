@@ -1,7 +1,6 @@
-// testWhatsApp.js - Test WhatsApp sending (run after adding Twilio creds to .env)
-
-require('dotenv').config();
-const { sendWhatsAppMessage } = require('./services/whatsappService');
+import dotenv from 'dotenv';
+dotenv.config();
+import sendWhatsAppMessage from './services/whatsappService.js';
 
 const testSend = async () => {
   try {

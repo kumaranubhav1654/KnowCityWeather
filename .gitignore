@@ -1,3 +1,7 @@
 node_modules/
 .env
+.env.*
+!.env.example
 .next
+backend/data/schedule.json
+.DS_Store
