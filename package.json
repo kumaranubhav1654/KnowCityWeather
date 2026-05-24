@@ -1,0 +1,14 @@
+{
+  "name": "knowcityweather",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Monorepo root — Render builds API from /backend",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "postinstall": "npm ci --prefix backend",
+    "build": "npm run build --prefix backend",
+    "start": "npm start --prefix backend"
+  }
+}

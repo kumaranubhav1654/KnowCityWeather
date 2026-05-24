@@ -5,13 +5,13 @@ services:
   - type: web
     name: knowcityweather-api
     runtime: node
-    rootDir: backend
-    buildCommand: npm ci
+    # Repo root (package.json delegates to backend/). Dashboard: leave Root Directory empty.
+    buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
-        value: "20"
+        value: "20.18.0"
       - key: NODE_ENV
-        production
+        value: production
     # Set in Render dashboard: OPENWEATHER_API_KEY, GEMINI_API_KEY,
     # TWILIO_*, USER_WHATSAPP_NUMBER, CITY, PORT (Render sets PORT automatically)

@@ -5,9 +5,10 @@
   "description": "KnowCityWeather API",
   "main": "server.js",
   "engines": {
-    "node": ">=20.9.0"
+    "node": "20.x"
   },
   "scripts": {
+    "build": "node --check server.js && echo Build OK",
     "start": "node server.js",
     "dev": "node server.js",
     "test": "node testWeather.js"
