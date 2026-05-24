@@ -1,12 +1,6 @@
 import axios from 'axios';
 
-function resolveApiBase() {
-  const raw =
-    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-  return raw.replace(/\/$/, '');
-}
-
-const API_BASE = resolveApiBase();
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 const client = axios.create({
   baseURL: API_BASE,

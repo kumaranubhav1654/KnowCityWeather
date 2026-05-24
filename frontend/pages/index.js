@@ -498,10 +498,6 @@ export default function Home() {
                   Run now
                 </button>
               </div>
-              <p className="mt-2 text-xs text-slate-500">
-                Uses current city, phone, and AI reminders. Default: 7:00 AM (
-                <code>0 7 * * *</code>).
-              </p>
             </form>
           </div>
 

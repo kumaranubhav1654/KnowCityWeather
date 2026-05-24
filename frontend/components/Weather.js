@@ -22,10 +22,13 @@ export default function Weather() {
       setError(null);
       
       console.log('📊 Fetching weather from backend...');
+
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      console.log('🔗 API Base URL:', API_BASE);
       
       // Call backend API (running on localhost:3001)
       const response = await axios.get(
-        `http://localhost:3001/api/weather?city=${city}`
+        `${API_BASE}/api/weather?city=${city}`
       );
 
       console.log('✅ Weather data received:', response.data);
