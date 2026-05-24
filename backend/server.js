@@ -15,11 +15,40 @@ import { initScheduler } from './services/schedulerService.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors()); // Allow frontend to call this server
-app.use(express.json()); // Parse JSON requests
+// Middleware — Render requires 0.0.0.0; browsers need CORS from Vercel → Render
+const corsOptions = {
+  origin: true, // reflect request Origin (works with credentials if needed later)
+  methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
+};
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
+app.use(express.json());
 
 // ROUTES
+
+// Root — Render/browser often request GET or HEAD /
+app.get('/', (req, res) => {
+  res.json({
+    name: 'KnowCityWeather API',
+    status: 'ok',
+    docs: {
+      health: '/api/health',
+      weather: '/api/weather?city=Bangalore',
+      config: '/api/config',
+    },
+  });
+});
+
+app.head('/', (req, res) => {
+  res.status(200).end();
+});
+
+// Short aliases (browser often tries /health instead of /api/health)
+app.get('/health', (req, res) => res.redirect(301, '/api/health'));
+app.get('/weather', (req, res) => {
+  const q = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+  res.redirect(301, `/api/weather${q}`);
+});
 
 // 1. GET /api/weather - Fetch weather data
 app.get('/api/weather', async (req, res) => {
@@ -115,8 +144,8 @@ app.use((req, res) => {
   });
 });
 
-// Start server
-app.listen(PORT, async () => {
+// Start server — bind 0.0.0.0 so Render can route external traffic
+app.listen(PORT, '0.0.0.0', async () => {
   try {
     const schedule = await initScheduler();
     console.log(
@@ -126,10 +155,8 @@ app.listen(PORT, async () => {
     console.error('⚠️ Scheduler init failed:', err.message);
   }
 
-  console.log(`📊 Weather:   http://localhost:${PORT}/api/weather`);
-  console.log(`🤖 Advice:    http://localhost:${PORT}/api/advice`);
-  console.log(`📱 Messages:  http://localhost:${PORT}/api/messages`);
-  console.log(`🔔 Alert:     http://localhost:${PORT}/api/alert/smart`);
-  console.log(`⏰ Schedule:  http://localhost:${PORT}/api/schedule`);
-  console.log(`💚 Health:    http://localhost:${PORT}/api/health\n`);
+  const base = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+  console.log(`🚀 Listening on port ${PORT}`);
+  console.log(`💚 Health:    ${base}/api/health`);
+  console.log(`📊 Weather:   ${base}/api/weather`);
 });

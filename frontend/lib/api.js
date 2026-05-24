@@ -1,12 +1,18 @@
 import axios from 'axios';
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+function resolveApiBase() {
+  const raw =
+    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  return raw.replace(/\/$/, '');
+}
+
+const API_BASE = resolveApiBase();
 
 const client = axios.create({
   baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
-  timeout: 60000,
+  // Render free tier can cold-start 30–60s
+  timeout: 90000,
 });
 
 export async function getHealth() {

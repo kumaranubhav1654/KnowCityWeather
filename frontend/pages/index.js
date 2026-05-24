@@ -28,6 +28,7 @@ export default function Home() {
   const [weatherError, setWeatherError] = useState(null);
 
   const [serverOnline, setServerOnline] = useState(null);
+  const [connectionError, setConnectionError] = useState(null);
   const [config, setConfig] = useState(null);
   const [testInfo, setTestInfo] = useState(null);
 
@@ -64,12 +65,22 @@ export default function Home() {
   }, []);
 
   const checkServer = useCallback(async () => {
+    setConnectionError(null);
     try {
       await getHealth();
       setServerOnline(true);
       await loadConfig();
-    } catch {
+    } catch (err) {
       setServerOnline(false);
+      const hint =
+        API_BASE.includes('localhost') &&
+        typeof window !== 'undefined' &&
+        !window.location.hostname.includes('localhost')
+          ? ' Set NEXT_PUBLIC_API_URL on Vercel to your Render URL and redeploy.'
+          : ' Render free tier may take up to 60s to wake up — try Refresh status.';
+      setConnectionError(
+        (err.message || 'Network error') + hint
+      );
     }
   }, [loadConfig]);
 
@@ -278,6 +289,7 @@ export default function Home() {
 
   useEffect(() => {
     const init = async () => {
+      setConnectionError(null);
       try {
         await getHealth();
         setServerOnline(true);
@@ -291,8 +303,15 @@ export default function Home() {
           await loadWeather(defaultCity);
           await loadSchedule();
         }
-      } catch {
+      } catch (err) {
         setServerOnline(false);
+        const hint =
+          API_BASE.includes('localhost') &&
+          typeof window !== 'undefined' &&
+          !window.location.hostname.includes('localhost')
+            ? ' Add NEXT_PUBLIC_API_URL=https://knowcityweather-pazk.onrender.com on Vercel → redeploy.'
+            : ' Wait ~60s if Render was sleeping, then click Refresh status.';
+        setConnectionError((err.message || 'Cannot reach backend') + hint);
       }
     };
     init();
@@ -376,6 +395,18 @@ export default function Home() {
             </div>
           </div>
         </header>
+
+        {connectionError && (
+          <div className="relative mx-auto max-w-6xl px-4 pt-4">
+            <div className="rounded-xl border border-red-400/40 bg-red-500/15 px-4 py-3 text-sm text-red-100">
+              <p className="font-medium">Cannot reach backend</p>
+              <p className="mt-1 text-red-200/90">{connectionError}</p>
+              <p className="mt-2 text-xs text-red-200/70">
+                Calling: <code className="text-red-100">{API_BASE}/api/health</code>
+              </p>
+            </div>
+          </div>
+        )}
 
         <main className="relative mx-auto max-w-6xl px-4 py-8">
           <div className="mb-8 grid gap-4 lg:grid-cols-2">
