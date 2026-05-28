@@ -371,7 +371,7 @@ export default function Weather() {
 
   // Display weather data
   return (
-    <div className="max-w-md mx-auto bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg shadow-lg p-6 text-white">
+    <div className="max-w-md mx-auto bg-linear-to-br from-blue-400 to-blue-600 rounded-lg shadow-lg p-6 text-white">
       <h2 className="text-2xl font-bold mb-4">
         📍 {weather?.city}, {weather?.country}
       </h2>
